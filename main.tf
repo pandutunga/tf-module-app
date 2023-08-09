@@ -102,7 +102,7 @@ resource "aws_route53_record" "dns" {
 }
 
 # null resource - ansible
-resource "null_resource" "ansible"{
+resource "null_resource" "ansible" {
   depends_on = [aws_instance.instance, aws_route53_record.dns]
   provisioner "remote-exec" {
 
