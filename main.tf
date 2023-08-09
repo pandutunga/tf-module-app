@@ -3,8 +3,6 @@ resource "aws_iam_policy" "policy" {
   path        = "/"
   description = "${var.component}-${var.env}-ssm-pm-policy"
 
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -100,8 +98,6 @@ resource "aws_route53_record" "dns" {
   ttl     = 30
   records = [aws_instance.instance.private_ip]
 }
-
-
 
 resource "null_resource" "ansible" {
   depends_on = [aws_instance.instance, aws_route53_record.dns]
