@@ -40,10 +40,10 @@ resource "aws_iam_role" "role" {
   })
 }
 
-  resource "aws_iam_instance_profile" "instance_profile" {
-    name = "${var.component}-${var.env}-ec2-role"
-    role = aws_iam_role.role.name
-  }
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = "${var.component}-${var.env}-ec2-role"
+  role = aws_iam_role.role.name
+}
 
 resource "aws_iam_role_policy_attachment" "policy-attach" {
   role       = aws_iam_role.role.name
@@ -51,42 +51,42 @@ resource "aws_iam_role_policy_attachment" "policy-attach" {
 }
 
 
-  resource "aws_security_group" "sg" {
-    name        = "${var.component}-${var.env}-sg"
-    description = "${var.component}-${var.env}-sg"
+resource "aws_security_group" "sg" {
+  name        = "${var.component}-${var.env}-sg"
+  description = "${var.component}-${var.env}-sg"
 
-    ingress {
-      from_port        = 0
-      to_port          = 0
-      protocol         = "-1"
-      cidr_blocks      = ["0.0.0.0/0"]
-    }
-
-    egress {
-      from_port        = 0
-      to_port          = 0
-      protocol         = "-1"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
-    }
-
-    tags = {
-      Name = "${var.component}-${var.env}-sg"
-    }
+  ingress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "${var.component}-${var.env}-sg"
+  }
+}
 
 #EC2 instance
-  resource "aws_instance" "instance" {
-    ami                    = data.aws_ami.ami.id
-    instance_type          = "t3.small"
-    vpc_security_group_ids = [aws_security_group.sg.id]
-    iam_instance_profile = aws_iam_instance_profile.instance_profile.name
+resource "aws_instance" "instance" {
+  ami                    = data.aws_ami.ami.id
+  instance_type          = "t3.small"
+  vpc_security_group_ids = [aws_security_group.sg.id]
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
 
-    tags = {
-      Name = "${var.component}-${var.env}"
-    }
+  tags = {
+    Name = "${var.component}-${var.env}"
   }
+}
 
 #DNS record
 resource "aws_route53_record" "dns" {
